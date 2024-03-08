@@ -43,11 +43,10 @@ const hardHatConfig: HardhatUserConfig = {
       url: process.env.TOMO_PROVIDER_URL ?? "https://rpc.testnet.tomochain.com",
       accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
     },
-    matictestnet: {
+    mumbai: {
       chainId: 80001,
-      url:
-        process.env.MATIC_PROVIDER_URL ?? "https://speedy-nodes-nyc.moralis.io/036063875a28828fa0c00596/polygon/mumbai",
-      accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
+      url: process.env.MATIC_PROVIDER_URL ?? "https://public.stackup.sh/api/v1/node/polygon-mumbai",
+      accounts: ["3c4aa644266a4f3a508ac54505176a3a64c2c01670b2f08ee945f2169818b51c"].filter(Boolean),
     },
     bsctestnet: {
       chainId: 97,
@@ -60,7 +59,10 @@ const hardHatConfig: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    // apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      polygonMumbai: "MAH7N9J9VBNKU7FVGSGD59JNPGS5CFK6VH",
+    },
   },
 };
 

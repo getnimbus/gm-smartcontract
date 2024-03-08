@@ -3,5 +3,7 @@
 /* eslint-disable */
 export { Box__factory } from "./Box__factory";
 export { BoxV2__factory } from "./BoxV2__factory";
+export { GMPrizePool__factory } from "./GMPrizePool__factory";
 export { Greeter__factory } from "./Greeter__factory";
 export { ITManToken__factory } from "./ITManToken__factory";
+export { MockToken__factory } from "./MockToken__factory";

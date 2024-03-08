@@ -3,5 +3,7 @@
 /* eslint-disable */
 export type { Box } from "./Box";
 export type { BoxV2 } from "./BoxV2";
+export type { GMPrizePool } from "./GMPrizePool";
 export type { Greeter } from "./Greeter";
 export type { ITManToken } from "./ITManToken";
+export type { MockToken } from "./MockToken";

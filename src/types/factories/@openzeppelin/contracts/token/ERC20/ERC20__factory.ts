@@ -5,11 +5,97 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  IERC20Metadata,
-  IERC20MetadataInterface,
-} from "../../../../../../@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata";
+  ERC20,
+  ERC20Interface,
+} from "../../../../../@openzeppelin/contracts/token/ERC20/ERC20";
 
 const _abi = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "allowance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "needed",
+        type: "uint256",
+      },
+    ],
+    name: "ERC20InsufficientAllowance",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "needed",
+        type: "uint256",
+      },
+    ],
+    name: "ERC20InsufficientBalance",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "approver",
+        type: "address",
+      },
+    ],
+    name: "ERC20InvalidApprover",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+    ],
+    name: "ERC20InvalidReceiver",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "ERC20InvalidSender",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+    ],
+    name: "ERC20InvalidSpender",
+    type: "error",
+  },
   {
     anonymous: false,
     inputs: [
@@ -234,15 +320,12 @@ const _abi = [
   },
 ] as const;
 
-export class IERC20Metadata__factory {
+export class ERC20__factory {
   static readonly abi = _abi;
-  static createInterface(): IERC20MetadataInterface {
-    return new utils.Interface(_abi) as IERC20MetadataInterface;
+  static createInterface(): ERC20Interface {
+    return new utils.Interface(_abi) as ERC20Interface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IERC20Metadata {
-    return new Contract(address, _abi, signerOrProvider) as IERC20Metadata;
+  static connect(address: string, signerOrProvider: Signer | Provider): ERC20 {
+    return new Contract(address, _abi, signerOrProvider) as ERC20;
   }
 }

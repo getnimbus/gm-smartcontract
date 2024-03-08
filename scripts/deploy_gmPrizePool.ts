@@ -15,7 +15,6 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-
   const MockToken = await hre.ethers.getContractFactory("MockToken");
   const mockToken = await MockToken.deploy("Mock ERC20", "MOCK", 18, hre.ethers.utils.parseEther("1000000"));
   console.log("Mock ERC20 token deployed to:", mockToken.address);
@@ -23,6 +22,7 @@ async function main() {
   const GMPrizePool = await hre.ethers.getContractFactory("GMPrizePool");
   const instance = await GMPrizePool.deploy(mockToken.address);
   await instance.deployed();
+  console.log("Mock GM Prize pool token deployed to:", instance.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
