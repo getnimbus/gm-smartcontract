@@ -104,6 +104,7 @@ contract GMPrizePool {
         for (uint256 i = 0; i < winnersList.length; i++) {
             // Perform the desired operation on each element
             totalPrize += winnersList[i].prizeAmount;
+            winnersList[i].prizeAmount = 0; // Reset after claim
         }
 
         console.log("Start send back");
