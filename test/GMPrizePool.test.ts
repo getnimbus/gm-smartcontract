@@ -17,7 +17,7 @@ describe("GMPrizePool", () => {
 
     const winners = [
       {
-        winnerAddress: winner.add`ress,
+        winnerAddress: winner.address,
         prizeAmount: 100000,
       },
     ];
@@ -30,12 +30,16 @@ describe("GMPrizePool", () => {
     // Wait until the transaction is mined
     await depositTx.wait();
 
-    expect(await instance.connect(winner).getMyPrize()).to.equal(100000);
+    let winnerList = await instance.connect(winner).getWinnerList();
+
+    expect(winnerList[0].winnerAddress).to.equal(winner.address);
+    expect(winnerList[0].prizeAmount).to.equal(100000);
 
     const redeemTx = await instance.connect(winner).redeemPrize();
     await redeemTx.wait();
 
-    expect(await instance.connect(winner).getMyPrize()).to.equal(0);
+    winnerList = await instance.connect(winner).getWinnerList();
+    expect(winnerList[0].prizeAmount).to.equal(0);
 
     // expect(await instance.getBackprize()).to.not.equal(true);
     await ethers.provider.send("evm_mine", []);
@@ -44,5 +48,64 @@ describe("GMPrizePool", () => {
     await getBackTx.wait();
     console.log(getBackTx);
     // expect(await instance.getBackprize()).to.equal(true);
+  });
+
+  it("GMPrizePool deposit when already have reward", async () => {
+    const [owner, winner, winner2] = await ethers.getSigners();
+
+    console.log("Deploying Mock ERC20 token...");
+
+    const MockToken = await ethers.getContractFactory("MockToken");
+    const mockToken = await MockToken.deploy("Mock ERC20", "MOCK", 18, ethers.utils.parseEther("1000000"));
+    console.log("Mock ERC20 token deployed to:", mockToken.address);
+
+    const GMPrizePool = await ethers.getContractFactory("GMPrizePool");
+    const instance = await GMPrizePool.deploy(mockToken.address);
+    await instance.deployed();
+
+    const winners = [
+      {
+        winnerAddress: winner.address,
+        prizeAmount: 100000,
+      },
+    ];
+
+    const approveTx = await mockToken.approve(instance.address, 100000);
+    await approveTx.wait();
+
+    const depositTx = await instance.depositPrize(winners, 20);
+
+    // Wait until the transaction is mined
+    await depositTx.wait();
+
+    let winnerList = await instance.connect(winner).getWinnerList();
+
+    expect(winnerList[0].winnerAddress).to.equal(winner.address);
+    expect(winnerList[0].prizeAmount).to.equal(100000);
+
+    const approveTx2 = await mockToken.approve(instance.address, 200000);
+    await approveTx2.wait();
+
+    const winners2 = [
+      {
+        winnerAddress: winner2.address,
+        prizeAmount: 200000,
+      },
+    ];
+
+    const beforeBalance = await mockToken.balanceOf(owner.address);
+    const ownerAddress = await instance.owner();
+    // console.log({ ownerAddress, orgin: owner.address });
+    console.log({ beforeBalance });
+    const depositTx2 = await instance.depositPrize(winners2, 100);
+    await depositTx2.wait();
+
+    winnerList = await instance.connect(winner).getWinnerList();
+    expect(winnerList[0].prizeAmount).to.equal(0);
+    expect(winnerList[1].winnerAddress).to.equal(winner2.address);
+    expect(winnerList[1].prizeAmount).to.equal(200000);
+
+    const withdrawlBalance = await mockToken.balanceOf(owner.address);
+    expect(withdrawlBalance).to.eq(beforeBalance.add(100000).sub(200000));
   });
 });

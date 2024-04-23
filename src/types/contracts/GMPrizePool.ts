@@ -43,7 +43,7 @@ export interface GMPrizePoolInterface extends utils.Interface {
     "depositPrize((address,uint256)[],uint256)": FunctionFragment;
     "expiredTime()": FunctionFragment;
     "getBackprize()": FunctionFragment;
-    "getMyPrize()": FunctionFragment;
+    "getWinnerList()": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemPrize()": FunctionFragment;
   };
@@ -53,7 +53,7 @@ export interface GMPrizePoolInterface extends utils.Interface {
       | "depositPrize"
       | "expiredTime"
       | "getBackprize"
-      | "getMyPrize"
+      | "getWinnerList"
       | "owner"
       | "redeemPrize"
   ): FunctionFragment;
@@ -71,7 +71,7 @@ export interface GMPrizePoolInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getMyPrize",
+    functionFragment: "getWinnerList",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -92,7 +92,10 @@ export interface GMPrizePoolInterface extends utils.Interface {
     functionFragment: "getBackprize",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getMyPrize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getWinnerList",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "redeemPrize",
@@ -156,7 +159,9 @@ export interface GMPrizePool extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
-    getMyPrize(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getWinnerList(
+      overrides?: CallOverrides
+    ): Promise<[GMPrizePool.WinnerStructOutput[]]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -177,7 +182,9 @@ export interface GMPrizePool extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
-  getMyPrize(overrides?: CallOverrides): Promise<BigNumber>;
+  getWinnerList(
+    overrides?: CallOverrides
+  ): Promise<GMPrizePool.WinnerStructOutput[]>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -196,7 +203,9 @@ export interface GMPrizePool extends BaseContract {
 
     getBackprize(overrides?: CallOverrides): Promise<boolean>;
 
-    getMyPrize(overrides?: CallOverrides): Promise<BigNumber>;
+    getWinnerList(
+      overrides?: CallOverrides
+    ): Promise<GMPrizePool.WinnerStructOutput[]>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -225,7 +234,7 @@ export interface GMPrizePool extends BaseContract {
 
     getBackprize(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
-    getMyPrize(overrides?: CallOverrides): Promise<BigNumber>;
+    getWinnerList(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -245,7 +254,7 @@ export interface GMPrizePool extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
-    getMyPrize(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getWinnerList(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
