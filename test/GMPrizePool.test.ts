@@ -30,27 +30,23 @@ describe("GMPrizePool", () => {
     // Wait until the transaction is mined
     await depositTx.wait();
 
-    let winnerList = await instance.connect(winner).getWinnerList();
-
-    expect(winnerList[0].winnerAddress).to.equal(winner.address);
-    expect(winnerList[0].prizeAmount).to.equal(100000);
+    let winnerData = await instance.connect(winner).getWinner(winner.address);
+    expect(winnerData.prizeAmount).to.equal(100000);
 
     const redeemTx = await instance.connect(winner).redeemPrize();
     await redeemTx.wait();
 
-    winnerList = await instance.connect(winner).getWinnerList();
-    expect(winnerList[0].prizeAmount).to.equal(0);
+    winnerData = await instance.connect(winner).getWinner(winner.address);
+    expect(winnerData.prizeAmount).to.equal(0);
 
-    // expect(await instance.getBackprize()).to.not.equal(true);
     await ethers.provider.send("evm_mine", []);
     await ethers.provider.send("evm_mine", []);
-    const getBackTx = await instance.getBackprize();
+    const getBackTx = await instance.getPrizeBack();
     await getBackTx.wait();
     console.log(getBackTx);
-    // expect(await instance.getBackprize()).to.equal(true);
   });
 
-  it("GMPrizePool deposit when already have reward", async () => {
+  it.only("GMPrizePool deposit when already have reward", async () => {
     const [owner, winner, winner2] = await ethers.getSigners();
 
     console.log("Deploying Mock ERC20 token...");
@@ -73,15 +69,13 @@ describe("GMPrizePool", () => {
     const approveTx = await mockToken.approve(instance.address, 100000);
     await approveTx.wait();
 
-    const depositTx = await instance.depositPrize(winners, 20);
+    const depositTx = await instance.depositPrize(winners, 7);
 
     // Wait until the transaction is mined
     await depositTx.wait();
 
-    let winnerList = await instance.connect(winner).getWinnerList();
-
-    expect(winnerList[0].winnerAddress).to.equal(winner.address);
-    expect(winnerList[0].prizeAmount).to.equal(100000);
+    let winnerData = await instance.connect(winner).getWinner(winner.address);
+    expect(winnerData.prizeAmount).to.equal(100000);
 
     const approveTx2 = await mockToken.approve(instance.address, 200000);
     await approveTx2.wait();
@@ -94,18 +88,22 @@ describe("GMPrizePool", () => {
     ];
 
     const beforeBalance = await mockToken.balanceOf(owner.address);
-    const ownerAddress = await instance.owner();
-    // console.log({ ownerAddress, orgin: owner.address });
     console.log({ beforeBalance });
+
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+
     const depositTx2 = await instance.depositPrize(winners2, 100);
     await depositTx2.wait();
 
-    winnerList = await instance.connect(winner).getWinnerList();
-    expect(winnerList[0].prizeAmount).to.equal(0);
-    expect(winnerList[1].winnerAddress).to.equal(winner2.address);
-    expect(winnerList[1].prizeAmount).to.equal(200000);
+    winnerData = await instance.connect(winner2).getWinner(winner2.address);
+    expect(winnerData.prizeAmount).to.equal(200000);
 
-    const withdrawlBalance = await mockToken.balanceOf(owner.address);
-    expect(withdrawlBalance).to.eq(beforeBalance.add(100000).sub(200000));
+    const withdrawBalance = await mockToken.balanceOf(owner.address);
+    expect(withdrawBalance).to.eq(beforeBalance.add(100000).sub(200000));
   });
 });

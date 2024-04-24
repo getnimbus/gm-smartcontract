@@ -2,9 +2,10 @@
   "name": "dapp-starter",
   "version": "0.4.0",
   "scripts": {
-    "build:sc": "npx hardhat compile --network localhost",
     "build": "npx hardhat compile --network localhost && next build",
+    "build:sc": "npx hardhat compile --network localhost",
     "clean": "npx hardhat clean && rimraf -rf src/types",
+    "deploy": "npx hardhat run --network nebulastestnet scripts/deploy_gmPrizePool.ts",
     "dev": "next dev",
     "lint": "next lint",
     "lint:sol": "npx solhint 'contracts/**/*.sol'",
@@ -26,6 +27,7 @@
   "dependencies": {
     "@ethersproject/providers": "5.7.2",
     "@ethersproject/units": "5.7.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.6",
     "@tailwindcss/typography": "0.5.10",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",

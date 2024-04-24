@@ -3,8 +3,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-// eslint-disable-next-line import/no-extraneous-dependencies
-import hre from "hardhat";
+import { ethers } from "hardhat";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -15,11 +14,11 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const MockToken = await hre.ethers.getContractFactory("MockToken");
-  const mockToken = await MockToken.deploy("Mock ERC20", "MOCK", 18, hre.ethers.utils.parseEther("1000000"));
+  const MockToken = await ethers.getContractFactory("MockToken");
+  const mockToken = await MockToken.deploy("Mock ERC20", "MOCK", 18, ethers.utils.parseEther("10000000"));
   console.log("Mock ERC20 token deployed to:", mockToken.address);
 
-  const GMPrizePool = await hre.ethers.getContractFactory("GMPrizePool");
+  const GMPrizePool = await ethers.getContractFactory("GMPrizePool");
   const instance = await GMPrizePool.deploy(mockToken.address);
   await instance.deployed();
   console.log("Mock GM Prize pool token deployed to:", instance.address);

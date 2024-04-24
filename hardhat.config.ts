@@ -45,7 +45,7 @@ const hardHatConfig: HardhatUserConfig = {
     },
     mumbai: {
       chainId: 80001,
-      url: process.env.MATIC_PROVIDER_URL ?? "https://public.stackup.sh/api/v1/node/polygon-mumbai",
+      url: process.env.MATIC_PROVIDER_URL ?? "https://polygon-testnet.public.blastapi.io",
       accounts: ["3c4aa644266a4f3a508ac54505176a3a64c2c01670b2f08ee945f2169818b51c"].filter(Boolean),
     },
     bsctestnet: {
@@ -53,16 +53,40 @@ const hardHatConfig: HardhatUserConfig = {
       url: process.env.BSC_PROVIDER_URL ?? "https://speedy-nodes-nyc.moralis.io/036063875a28828fa0c00596/bsc/testnet",
       accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
     },
+    nebulastestnet: {
+      chainId: 2484,
+      url: process.env.MATIC_PROVIDER_URL ?? "https://rpc-nebulas-testnet.uniultra.xyz",
+      // Accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
+      accounts: ["1eb40dcf0c44aba73f1e16865df8f2f3f960f649c64d3d3200618701fe3c26a7"].filter(Boolean),
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
   },
   etherscan: {
-    // apiKey: process.env.ETHERSCAN_API_KEY,
+    // ApiKey: process.env.ETHERSCAN_API_KEY,
+    // apiKey: {
+    //   polygonMumbai: "MAH7N9J9VBNKU7FVGSGD59JNPGS5CFK6VH",
+    // },
     apiKey: {
-      polygonMumbai: "MAH7N9J9VBNKU7FVGSGD59JNPGS5CFK6VH",
+      nebulastestnet: "api-key",
     },
+    customChains: [
+      {
+        network: "nebulastestnet",
+        chainId: 2484,
+        urls: {
+          apiURL: "https://testnet.u2uscan.xyz/api",
+          browserURL: "https://testnet.u2uscan.xyz/",
+        },
+      },
+    ],
+  },
+  sourcify: {
+    // Disabled by default
+    // Doesn't need an API key
+    enabled: true,
   },
 };
 
