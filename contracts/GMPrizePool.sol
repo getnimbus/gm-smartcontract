@@ -20,7 +20,7 @@ contract GMPrizePool {
 	event RedeemSuccess(address indexed sender, uint256 value);
 
 	constructor(address _token) {
-		console.log("Deploying a Pool for:", msg.sender);
+		console.log("Deploying a Pool to:", address(this));
 		owner = msg.sender;
 		rewardToken = IERC20(address(_token));
 	}
@@ -33,7 +33,7 @@ contract GMPrizePool {
 		Winner[] calldata _winnersList,
 		uint _expiredTime
 	) public returns (bool) {
-		console.log("Get input", block.number);
+		console.log("Block Number", block.number);
 		require(msg.sender == owner, "Only Admin");
 		require(
 			_expiredTime > block.number,
@@ -42,6 +42,7 @@ contract GMPrizePool {
 		require(_winnersList.length > 0, "Must have at least 1 winner");
 		console.log("Done check");
 
+		// Get all prize that user not claim last month
 		getPrizeBack();
 
 		expiredTime = _expiredTime;
@@ -106,7 +107,7 @@ contract GMPrizePool {
 	function getPrizeBack() public returns (bool) {
 		console.log("Block Number", block.number);
 		require(msg.sender == owner, "Only Admin");
-		require(block.number > expiredTime, "Not expired yet");
+		// require(block.number > expiredTime, "Not expired yet");
 
 		uint totalPrize = 0;
 		for (uint256 i = 0; i < winnersList.length; i++) {
