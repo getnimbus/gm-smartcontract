@@ -15,14 +15,19 @@ async function main() {
 
   // We get the contract to deploy
   const MockToken = await ethers.getContractFactory("MockToken");
-  const mockToken = await MockToken.deploy("Mock USDC", "USDC", 6, ethers.utils.parseEther("10000000000"));
+  const mockToken = await MockToken.deploy(
+    "Mock USDC",
+    "USDC",
+    18,
+    ethers.utils.parseEther("10000000000000000000000000"),
+  );
   console.log("Mock ERC20 token deployed to:", mockToken.address);
 
   const GMPrizePool = await ethers.getContractFactory("GMPrizePool");
   const instance = await GMPrizePool.deploy(mockToken.address);
   await instance.deployed();
 
-  const approveTx = await mockToken.approve(instance.address, 10000000000);
+  const approveTx = await mockToken.approve(instance.address, BigInt("1000000000000000000000000"));
   await approveTx.wait();
 
   console.log("Mock GM Prize pool token deployed to:", instance.address);
