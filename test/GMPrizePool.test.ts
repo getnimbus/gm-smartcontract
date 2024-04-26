@@ -2,6 +2,26 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { createWalletClient, http, defineChain, getContract } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { scrollSepolia } from "viem/chains";
+
+const u2uTestnet = defineChain({
+  id: 2484,
+  name: "U2U Nebulas Testnet",
+  network: "nebulas-testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "U2U",
+    symbol: "U2U",
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc-nebulas-testnet.uniultra.xyz/"] },
+    public: { http: ["https://rpc-nebulas-testnet.uniultra.xyz/"] },
+  },
+  blockExplorers: {
+    default: { name: "NebulasTestnet", url: "https://testnet.u2uscan.xyz/" },
+  },
+  testnet: true,
+});
 
 const contractAbi = [
   {
@@ -306,25 +326,6 @@ const erc20Abi = [
   },
 ];
 
-const u2uTestnet = defineChain({
-  id: 2484,
-  name: "U2U Nebulas Testnet",
-  network: "nebulas-testnet",
-  nativeCurrency: {
-    decimals: 18,
-    name: "U2U",
-    symbol: "U2U",
-  },
-  rpcUrls: {
-    default: { http: ["https://rpc-nebulas-testnet.uniultra.xyz/"] },
-    public: { http: ["https://rpc-nebulas-testnet.uniultra.xyz/"] },
-  },
-  blockExplorers: {
-    default: { name: "NebulasTestnet", url: "https://testnet.u2uscan.xyz/" },
-  },
-  testnet: true,
-});
-
 describe("GMPrizePool", () => {
   it("GMPrizePool full flow", async () => {
     const [owner, winner] = await ethers.getSigners();
@@ -431,7 +432,28 @@ describe("GMPrizePool", () => {
     expect(withdrawBalance).to.eq(beforeBalance.add(100000).sub(200000));
   });
 
-  it.only("deposit prize", async () => {
+  it("call erc20", async () => {
+    const account = privateKeyToAccount("0x1eb40dcf0c44aba73f1e16865df8f2f3f960f649c64d3d3200618701fe3c26a7");
+
+    const client = createWalletClient({
+      account,
+      chain: u2uTestnet,
+      transport: http(undefined, {
+        batch: true,
+      }),
+    });
+
+    const contract = getContract({
+      address: "0x577D71Da6F467069dF976be4314cEf26Fcf932F2",
+      abi: erc20Abi,
+      client,
+    });
+
+    const result = await contract.read.decimals();
+    console.log(result);
+  });
+
+  it("deposit prize nebulas testnet prize", async () => {
     const account = privateKeyToAccount("0x1eb40dcf0c44aba73f1e16865df8f2f3f960f649c64d3d3200618701fe3c26a7");
 
     const client = createWalletClient({
@@ -455,24 +477,30 @@ describe("GMPrizePool", () => {
     console.log(result);
   });
 
-  it("call erc20", async () => {
+  it.only("deposit prize scroll sepolia testnet prize", async () => {
     const account = privateKeyToAccount("0x1eb40dcf0c44aba73f1e16865df8f2f3f960f649c64d3d3200618701fe3c26a7");
 
     const client = createWalletClient({
       account,
-      chain: u2uTestnet,
+      chain: scrollSepolia,
       transport: http(undefined, {
         batch: true,
       }),
     });
 
+    // ERC20 token address
+    // 0x845ad1Cd78d4BA3975ab2f33AF8D12ABa23FAc90
+
     const contract = getContract({
-      address: "0x577D71Da6F467069dF976be4314cEf26Fcf932F2",
-      abi: erc20Abi,
+      address: "0x21a7205A528A6De0A0aB05fb96254A460b5E5899",
+      abi: contractAbi,
       client,
     });
 
-    const result = await contract.read.decimals();
+    const result = await contract.write.depositPrize([
+      [["0x50987dd3755c0D54dE4970429F09DBa85e660258", BigInt("10000000000000000000")]],
+      4154628,
+    ]);
     console.log(result);
   });
 });

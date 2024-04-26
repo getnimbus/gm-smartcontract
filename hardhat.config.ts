@@ -46,7 +46,7 @@ const hardHatConfig: HardhatUserConfig = {
     mumbai: {
       chainId: 80001,
       url: process.env.MATIC_PROVIDER_URL ?? "https://polygon-testnet.public.blastapi.io",
-      accounts: ["3c4aa644266a4f3a508ac54505176a3a64c2c01670b2f08ee945f2169818b51c"].filter(Boolean),
+      accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
     },
     bsctestnet: {
       chainId: 97,
@@ -56,8 +56,12 @@ const hardHatConfig: HardhatUserConfig = {
     nebulastestnet: {
       chainId: 2484,
       url: process.env.MATIC_PROVIDER_URL ?? "https://rpc-nebulas-testnet.uniultra.xyz",
-      // Accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
-      accounts: ["1eb40dcf0c44aba73f1e16865df8f2f3f960f649c64d3d3200618701fe3c26a7"].filter(Boolean),
+      accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
+    },
+    scrollsepolia: {
+      chainId: 534351,
+      url: process.env.MATIC_PROVIDER_URL ?? "https://sepolia-rpc.scroll.io",
+      accounts: [process.env.PRIVATE_KEY ?? ""].filter(Boolean),
     },
   },
   gasReporter: {
@@ -71,6 +75,7 @@ const hardHatConfig: HardhatUserConfig = {
     // },
     apiKey: {
       nebulastestnet: "api-key",
+      scrollsepolia: process.env.SCROLLSCAN_API_KEY ?? "api_key",
     },
     customChains: [
       {
@@ -81,12 +86,15 @@ const hardHatConfig: HardhatUserConfig = {
           browserURL: "https://testnet.u2uscan.xyz/",
         },
       },
+      {
+        network: "scrollsepolia",
+        chainId: 534351,
+        urls: {
+          apiURL: "https://api-sepolia.scrollscan.com/api",
+          browserURL: "https://sepolia.scrollscan.com/",
+        },
+      },
     ],
-  },
-  sourcify: {
-    // Disabled by default
-    // Doesn't need an API key
-    enabled: true,
   },
 };
 
